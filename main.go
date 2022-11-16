@@ -15,8 +15,8 @@ func main() {
 	r.HandleFunc("/todos/{id:[0-9]+}", getTodoHandler).Methods(http.MethodGet)
 	r.HandleFunc("/todos", createTodoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/todos/{id:[0-9]+}", updateTodoHandler).Methods(http.MethodPatch)
-	// r.HandleFunc("/todos", deleteTodoHandler).Methods(http.MethodDelete)
-	// r.HandleFunc("/todos", deleteAllTodosHandler).Methods(http.MethodDelete)
+	r.HandleFunc("/todos/{id:[0-9]+}", deleteTodoHandler).Methods(http.MethodDelete)
+	r.HandleFunc("/todos", deleteAllTodosHandler).Methods(http.MethodDelete)
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

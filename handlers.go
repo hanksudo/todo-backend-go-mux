@@ -24,7 +24,8 @@ func getTodoHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(idVar)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -37,14 +38,16 @@ func getTodoHandler(w http.ResponseWriter, r *http.Request) {
 func createTodoHandler(w http.ResponseWriter, r *http.Request) {
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	todo := &Todo{}
 
 	err = json.Unmarshal(b, todo)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	todoRespository.Create(todo)
@@ -60,7 +63,8 @@ func updateTodoHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(idVar)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	existsTodo := todoRespository.Get(id)
@@ -72,19 +76,47 @@ func updateTodoHandler(w http.ResponseWriter, r *http.Request) {
 
 	b, err := io.ReadAll(r.Body)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
-	todo := &Todo{}
-	err = json.Unmarshal(b, todo)
+	updateTodo := &Todo{}
+	err = json.Unmarshal(b, updateTodo)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
-	todo.ID = existsTodo.ID
-	todoRespository.Update(todo)
+	existsTodo.Completed = updateTodo.Completed
+	existsTodo.Order = updateTodo.Order
+	existsTodo.Title = updateTodo.Title
+	todoRespository.Update(existsTodo)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(todo)
+	json.NewEncoder(w).Encode(existsTodo)
+}
+
+func deleteTodoHandler(w http.ResponseWriter, r *http.Request) {
+	idVar := mux.Vars(r)["id"]
+
+	id, err := strconv.Atoi(idVar)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = todoRespository.Delete(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func deleteAllTodosHandler(w http.ResponseWriter, r *http.Request) {
+	todoRespository.DeleteAll()
+	w.WriteHeader(http.StatusNoContent)
 }
