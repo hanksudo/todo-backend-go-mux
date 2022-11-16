@@ -17,7 +17,7 @@ type InMemoryTodoRepository struct {
 }
 
 func NewTodoRepository() TodoRespository {
-	return &InMemoryTodoRepository{nextID: 1}
+	return &InMemoryTodoRepository{Todos: []*Todo{}, nextID: 1}
 }
 
 func (r *InMemoryTodoRepository) Create(todo *Todo) {
