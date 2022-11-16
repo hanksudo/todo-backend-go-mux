@@ -53,6 +53,7 @@ func (r *InMemoryTodoRepository) Delete(id int) error {
 	for i, t := range r.Todos {
 		if t.ID == id {
 			r.Todos = append(r.Todos[:i], r.Todos[i+1:]...)
+			return nil
 		}
 	}
 	return fmt.Errorf("todo not found")
