@@ -12,10 +12,10 @@ func main() {
 	r.Use(loggingMiddleware)
 
 	r.HandleFunc("/todos", listTodosHandler).Methods(http.MethodGet)
+	r.HandleFunc("/todos/{id:[0-9]+}", getTodoHandler).Methods(http.MethodGet)
 	r.HandleFunc("/todos", createTodoHandler).Methods(http.MethodPost)
 	// r.HandleFunc("/todos", deleteAllTodosHandler).Methods(http.MethodDelete)
 
-	// r.HandleFunc("/todos", getTodoHandler).Methods(http.MethodGet)
 	// r.HandleFunc("/todos", deleteTodoHandler).Methods(http.MethodDelete)
 	// r.HandleFunc("/todos", updateTodoHandler).Methods(http.MethodPatch)
 
