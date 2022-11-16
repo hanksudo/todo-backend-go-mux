@@ -18,6 +18,9 @@ make serve
 # Create Todo
 curl 'http://localhost:8080/todos' -d '{"title":"abc","order":1,"completed":false}'
 
+# Update Todo
+curl -X 'PATCH' 'http://localhost:8080/todos/1' -d '{"title":"def","order":1,"completed":true}'
+
 # Get All
 curl -s 'http://localhost:8080/todos' | jq
 ```
